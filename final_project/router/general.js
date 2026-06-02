@@ -50,8 +50,8 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //  Retrieve the title parameter from the request URL and send the corresponding title details
-  const title = req.params.title;
-  const booksByTitle = Object.values(books).filter(book => book.title === title);
+  const title = req.params.title.toLowerCase().trim();
+  const booksByTitle = Object.values(books).filter(book => book.title.toLowerCase().trim() === title);
 
   if (booksByTitle.length > 0) {
     // Return immediately so the function ends here
