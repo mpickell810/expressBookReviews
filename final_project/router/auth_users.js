@@ -39,27 +39,7 @@ regd_users.post("/login", (req,res) => {
     }
     return res.status(200).send("User successfully logged in.");
 } else {
-    return res.status(208).json({ message: "Invalid Login. Check username and password."});
-    }
-});
-
-// Middleware to authenticate requests to "/login" endpoint
-express.application.use("/login", function auth (req, res, next) {
-    // Check if user is logged in and has a valid access token
-    if (req.session.authorization) {
-        let token = req.session.authorization['accessToken'];
-
-        // Verify JWT token
-        jwt.verify(token, "access", (err, user) => {
-            if (!err) {
-                req.user = user;
-                next(); //Proceed to the next middleware
-            } else {
-                return res.status(403).json({ message: "User not authenticated" });
-            }
-        });
-    } else {
-        return res.status(403).json({ message: "User not logged in."});
+    return res.status(401).json({ message: "Invalid Login. Check username and password."});
     }
 });
 
