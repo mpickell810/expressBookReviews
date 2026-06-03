@@ -5,6 +5,17 @@ const { users } = require('./router/auth_users.js');
 const customer_routes = require('./router/auth_users.js').authenticated;
 const genl_routes = require('./router/general.js').general;
 
+const doesExist = (username) => {
+    if (!Array.isArray(users)) return false;
+    const searchUser = username?.toLowerCase().trim();
+    return users.some(user => user?.username?.toLowerCase().trim() === searchUser);
+};
+
+const authenticatedUser = (username, password) => {
+    const user = users.find(u => u.username === username && u.password === password);
+    return user !== undefined;
+};
+
 const app = express();
 
 app.use(express.json());
