@@ -16,9 +16,7 @@ const user = users.find(u => u.username === username && u.password === password)
 return user !== undefined;
 }
 
-
 // Only registered users can login
-
 regd_users.post("/login", (req,res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -45,7 +43,25 @@ regd_users.post("/login", (req,res) => {
     }
 });
 
+// Middleware to authenticate requests to "/login" endpoint
+express.application.use("/login", function auth (req, res, next) {
+    // Check if user is logged in and has a valid access token
+    if (req.session.authorization) {
+        let token = req.session.authorization['accessToken'];
 
+        // Verify JWT token
+        jwt.verify(token, "access", (err, user) => {
+            if (!err) {
+                req.user = user;
+                next(); //Proceed to the next middleware
+            } else {
+                return res.status(403).json({ message: "User not authenticated" });
+            }
+        });
+    } else {
+        return res.status(403).json({ message: "User not logged in."});
+    }
+});
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
