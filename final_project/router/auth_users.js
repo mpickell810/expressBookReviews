@@ -26,6 +26,17 @@ regd_users.post("/login", (req,res) => {
   return res.status(400).json({message: "Error logging in."});
   }
 
+  if (!isValid(username)) {
+    return res.status(400).json({ message: "Invalid username." });
+  }
+
+  const userExists = users.some((user) => user.username === username);
+  if (userExists) {
+    return res.status(409).json({ message: "User already exists!" });
+  }
+
+  users.push({ username, password });
+
   // Authenticate user
   if (authenticatedUser(username, password)) {
     // Generate JWT access token
@@ -38,9 +49,9 @@ regd_users.post("/login", (req,res) => {
         accessToken, username
     }
     return res.status(200).send("User successfully logged in.");
-} else {
-    return res.status(401).json({ message: "Invalid Login. Check username and password."});
-    }
+    } else {
+        return res.status(401).json({ message: "Invalid Login. Check username and password."});
+        }
 });
 
 // Add a book review
