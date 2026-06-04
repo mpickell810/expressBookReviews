@@ -12,7 +12,8 @@ const doesExist = (username) => {
 };
 
 const authenticatedUser = (username, password) => {
-    const user = users.find(u => u.username === username && u.password === password);
+    const searchUser = username?.toLowerCase().trim();
+    const user = users.find(u => u.username?.toLowerCase().trim() === searchUser && u.password === password);
     return user !== undefined;
 };
 
@@ -57,7 +58,7 @@ app.post("/customer/login", (req, res) => {
     if (authenticatedUser(username, password)) {
         // Generate JWT access token
         let accessToken = jwt.sign({
-            data: password
+            data: username
         }, 'access', { expiresIn: 60 * 60 });
 
         // Store access token and username in session
