@@ -68,11 +68,6 @@ app.post("/customer/login", (req, res) => {
     }
 });
 
-//  Check if user is logged in and has valid access token
-if (req.session.authorization) {
-    let token = req.session.authorization['accessToken'];
-
-
 // Register a new user
 app.post("/register", (req, res) => {
     const username = req.body.username;
