@@ -15,6 +15,18 @@ public_users.post("/register", (req,res) => {
     const username = req.body.username;
     const password = req.body.password;
 
+    let registerPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve("Promise resolved")
+        }, 6000)})
+
+    console.log("Before calling promise");
+    registerPromise.then((successMessage) => {
+        console.log("From Callback " + successMessage)
+    })
+
+    console.log("After calling promise")
+
     //Check if both username and password are provided
     if (username && password) {
         // Check if the use does not already exist
