@@ -117,6 +117,18 @@ public_users.get('/title/:title',function (req, res) {
   const title = req.params.title.toLowerCase().trim();
   const booksByTitle = Object.values(books).filter(book => book.title.toLowerCase().trim() === title);
 
+  let titlePromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("Promise resolved")
+    }, 6000)})
+
+console.log("Before calling promise");
+titlePromise.then((successMessage) => {
+    console.log("From Callback " + successMessage)
+})
+
+console.log("After calling promise")
+
   if (booksByTitle.length > 0) {
     // Return immediately so the function ends here
     return res.status(200).send(JSON.stringify(booksByTitle, null, 4));
