@@ -82,7 +82,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
       let reviews = books[isbn].reviews;
       if (reviews && reviews[username]) {
           reviews[username] =reviewText;
-          return res.status(200).json({ message: "Review successfully updated!", reviews: books[isbn]. reviews });
+          return res.status(200).json({ message: "Review successfully updated!", reviews: books[isbn].reviews });
     } else {
         return res.status(404).json({ message: "You have not reviewed this book yet." });
     }
