@@ -61,7 +61,19 @@ public_users.get('/',function (req, res) {
 public_users.get('/isbn/:isbn',function (req, res) {
   // Retrieve the ISBN parameter from the request URL and send the corresponding ISBN's details
   const isbn = req.params.isbn;
-  const book = books[isbn]; 
+  const book = books[isbn];
+  
+  let isbnPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("Promise resolved")
+    }, 6000)})
+
+console.log("Before calling promise");
+isbnPromise.then((successMessage) => {
+    console.log("From Callback " + successMessage)
+})
+
+console.log("After calling promise")
   
   if (book) {
   // Return immediately so the function ends here
