@@ -15,6 +15,11 @@ public_users.post("/register", (req,res) => {
     const username = req.body.username;
     const password = req.body.password;
 
+    console.log("Register endpoint hit");
+    console.log("Request body:", req.body);
+
+    console.log("Username:", username, "Password:", password);
+
     let registerPromise = new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve("Promise resolved")
