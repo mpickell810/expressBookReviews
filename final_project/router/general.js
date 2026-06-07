@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -58,22 +59,14 @@ public_users.get('/',function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn', async (req, res) => {
   // Retrieve the ISBN parameter from the request URL and send the corresponding ISBN's details
   const isbn = req.params.isbn;
-  const book = books[isbn];
   
-  let isbnPromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve("Promise resolved")
-    }, 6000)})
-
-console.log("Before calling promise");
-isbnPromise.then((successMessage) => {
-    console.log("From Callback " + successMessage)
-})
-
-console.log("After calling promise")
+  try {
+  // Make an axios request (e.g., to an external API)
+  const response = await axios.get(`https://api.example.com/books/${isbn}`);
+  const book = response.data;
   
   if (book) {
   // Return immediately so the function ends here
@@ -82,59 +75,50 @@ console.log("After calling promise")
   // Return immediately if not found
     res.status(404).send("Book not found.");
   }
- });
+} catch (error) {
+  res.status(500).json({ message: "Error fetching book", error: error.message })
+}
+});
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author', async (req, res) => {
   // Retrieve the author parameter from the request URL and send the corresponding author details
   const author = req.params.author.toLowerCase().trim();
-  const booksByAuthor = Object.values(books).filter(book => book.author.toLowerCase().trim() === author);
+  try {
+  // Make an axios request to an external API
+  const response = await axios.get(`https://api.example.com/authors/${author}`);
+  const booksByAuthor = response.data;
 
-  let authorPromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve("Promise resolved")
-    }, 6000)})
-
-console.log("Before calling promise");
-authorPromise.then((successMessage) => {
-    console.log("From Callback " + successMessage)
-})
-
-console.log("After calling promise")
-
-  if (booksByAuthor.length > 0) {
+  if (booksByAuthor && booksByAuthor.length > 0) {
     // Return immediately so the function ends here
     return res.status(200).send(JSON.stringify(booksByAuthor, null, 4));
   } else {
     // Return immediately if not found
   return res.status(404).send("No books found for this author.");
   }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching books", error: error.message });
+  }
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title', async (req, res) => {
   //  Retrieve the title parameter from the request URL and send the corresponding title details
   const title = req.params.title.toLowerCase().trim();
-  const booksByTitle = Object.values(books).filter(book => book.title.toLowerCase().trim() === title);
 
-  let titlePromise = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve("Promise resolved")
-    }, 6000)})
+  try {
+    const response = await axios.get(`https://api.example.com/books/title/${title}`);
+    const booksByTitle = response.data;
 
-console.log("Before calling promise");
-titlePromise.then((successMessage) => {
-    console.log("From Callback " + successMessage)
-})
-
-console.log("After calling promise")
-
-  if (booksByTitle.length > 0) {
+  if (booksByTitle && booksByTitle.length > 0) {
     // Return immediately so the function ends here
     return res.status(200).send(JSON.stringify(booksByTitle, null, 4));
   } else {
     // Return immediately if not found
   return res.status(404).send("No books found with this title.");
+  }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching book", error: error.message });
   }
 });
 
