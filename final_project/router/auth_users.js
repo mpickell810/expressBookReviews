@@ -71,7 +71,7 @@ regd_users.post("/auth/review/:isbn", async (req, res) => {
 });
 
 // Modify a book review
-regd_users.put("/auth/review/:isbn", async (req, res) => {
+regd_users.put("/review/:isbn", async (req, res) => {
     try {
         if (!req.session || !req.session.authorization) {
             return res.status(401).json({ message: "Unauthorized. Please log in." });
