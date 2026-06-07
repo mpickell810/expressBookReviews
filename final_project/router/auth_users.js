@@ -6,18 +6,28 @@ const regd_users = express.Router();
 
 let users = [];
 
+//==========================================
+// Authenticated Helper Functions
+//==========================================
+
+//  Check if username is not empty and is a string
 const isValid = (username) => { //returns boolean
 // Check if username is not empty and is a string
 return username && typeof username === 'string' && username.trim().length > 0;
 }
 
+//  Check if username and password match records
 const authenticatedUser = (username, password) => { //returns boolean
 // Check if username and password match records.
 const user = users.find(u => u.username === username && u.password === password);
 return user !== undefined;
 }
 
-// Only registered users can login
+//==========================================
+//  Registered Users Endpoints
+//==========================================
+
+// Endpoint to log in a registered user
 regd_users.post("/login", (req,res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -48,6 +58,10 @@ regd_users.post("/login", (req,res) => {
     }
 });
 
+//==========================================
+//  Secure Routes (Authentication Required)
+//==========================================
+
 // Add a book review
 regd_users.post("/auth/review/:isbn", async (req, res) => {
     try {
@@ -65,6 +79,7 @@ regd_users.post("/auth/review/:isbn", async (req, res) => {
     } else {
         return res.status(404).json({ message: "Book not found." });
     }
+    //... (aditional code or error handling goes here)
 } catch (error) {
     res.status(500).json({ message: "Error adding review", error: error.message });
 }
@@ -92,6 +107,7 @@ regd_users.put("/review/:isbn", async (req, res) => {
     } else {
         return res.status(404).json({ message: "Book not found" });
     }
+        //... (aditional code or error handling goes here)
 } catch (error) {
     res.status(500).json({ message: "Error updating review", error: error.message });
 }
@@ -119,6 +135,7 @@ regd_users.delete("/review/:isbn", async (req, res) => {
     } else {
         return res.status(404).json({ message: "Book not found." });
     }
+    //... (aditional code or error handling goes here)
 } catch (error) {
     res.status(500).json({ message: "Error deleting review", error: error.message });
 }
