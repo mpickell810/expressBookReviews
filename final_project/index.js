@@ -28,7 +28,7 @@ app.use(session({
 }));
 
 // Authentication Middleware for protected customer routes
-app.use("/customer/auth/*", function auth(req, res, next) {
+app.use("/auth/*", function auth(req, res, next) {
     if (req.session && req.session.authorization) {
         let token = req.session.authorization['accessToken'];
 
@@ -46,7 +46,7 @@ app.use("/customer/auth/*", function auth(req, res, next) {
     }
 });    
 
-app.post("/customer/login", (req, res) => {
+app.post("/login", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
