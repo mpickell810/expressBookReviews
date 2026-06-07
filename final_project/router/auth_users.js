@@ -31,13 +31,6 @@ regd_users.post("/login", (req,res) => {
     return res.status(400).json({ message: "Invalid username." });
   }
 
-  const userExists = users.some((user) => user.username === username);
-  if (userExists) {
-    return res.status(409).json({ message: "User already exists!" });
-  }
-
-  users.push({ username, password });
-
   // Authenticate user
   if (authenticatedUser(username, password)) {
     // Generate JWT access token
@@ -52,13 +45,14 @@ regd_users.post("/login", (req,res) => {
     return res.status(200).send("User successfully logged in.");
     } else {
         return res.status(401).json({ message: "Invalid Login. Check username and password."});
-        }
+    }
 });
 
 // Add a book review
-regd_users.post("/auth/review/:isbn", (req, res) => {
+regd_users.post("/auth/review/:isbn", async (req, res) => {
+    try {
     const isbn = req.params.isbn;
-    const reviewText =req.body.review;
+    const reviewText = req.body.review;
     const username = req.session.authorization.username;
 
     if (books[isbn]) {
@@ -71,10 +65,18 @@ regd_users.post("/auth/review/:isbn", (req, res) => {
     } else {
         return res.status(404).json({ message: "Book not found." });
     }
+} catch (error) {
+    res.status(500).json({ message: "Error adding review", error: error.message });
+}
 });
 
 // Modify a book review
-regd_users.put("/auth/review/:isbn", (req, res) => {
+regd_users.put("/auth/review/:isbn", async (req, res) => {
+    try {
+        if (!req.session || !req.session.authorization) {
+            return res.status(401).json({ message: "Unauthorized. Please log in." });
+        }
+
     const isbn = req.params.isbn;
     const reviewText = req.body.review;
     const username = req.session.authorization.username;
@@ -82,7 +84,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     if (books[isbn]) {
       let reviews = books[isbn].reviews;
       if (reviews && reviews[username]) {
-          reviews[username] =reviewText;
+          reviews[username] = reviewText;
           return res.status(200).json({ message: "Review successfully updated!", reviews: books[isbn].reviews });
     } else {
         return res.status(404).json({ message: "You have not reviewed this book yet." });
@@ -90,14 +92,18 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     } else {
         return res.status(404).json({ message: "Book not found" });
     }
+} catch (error) {
+    res.status(500).json({ message: "Error updating review", error: error.message });
+}
 });
 
-regd_users.delete("/auth/review/:isbn", (req, res) => {
-    const isbn = req.params.isbn;
+regd_users.delete("/auth/review/:isbn", async (req, res) => {
+    try {
+        const isbn = req.params.isbn;
 
-    if (!req.session || !req.session.authorization) {
-        return res.status(401).json({ message: "Unauthorized. Please log in." });
-    }
+        if (!req.session || !req.session.authorization) {
+            return res.status(401).json({ message: "Unauthorized. Please log in." });
+        }
 
     const username = req.session.authorization.username;
 
@@ -113,6 +119,9 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     } else {
         return res.status(404).json({ message: "Book not found." });
     }
+} catch (error) {
+    res.status(500).json({ message: "Error deleting review", error: error.message });
+}
 });
 
 module.exports.authenticated = regd_users;
