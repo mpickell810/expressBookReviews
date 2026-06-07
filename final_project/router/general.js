@@ -144,12 +144,12 @@ public_users.get('/review/:isbn',function (req, res) {
   const isbn = req.params.isbn;
   const book = books[isbn];
 
-  if (book) {
+  if (book && book.reviews && Object.keys(book.reviews).length > 0) {
     // Return immediately so the function ends here
     return res.status(200).send(JSON.stringify(book.reviews, null, 4));
   } else {
     // Return immediately if not found
-  return res.status(404).send("No reviews found for this book.");
+  return res.status(200).send("");
   }
 });
 
