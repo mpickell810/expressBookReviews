@@ -97,7 +97,7 @@ regd_users.put("/review/:isbn", async (req, res) => {
 }
 });
 
-regd_users.delete("/auth/review/:isbn", async (req, res) => {
+regd_users.delete("/review/:isbn", async (req, res) => {
     try {
         const isbn = req.params.isbn;
 

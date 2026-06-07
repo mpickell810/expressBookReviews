@@ -32,7 +32,23 @@ app.use("/auth/*", function auth(req, res, next) {
     if (req.session && req.session.authorization) {
         let token = req.session.authorization['accessToken'];
 
-            //  Verify JWT token
+app.use("/review/*", function auth(req, res, next){
+    if (req.session && req.session.authorization) {
+        let token = req.session.authorization['accessToken'];
+        jwt.verify(token, "access", (err,user) => {
+            if (!err) {
+                req.user = user;
+                next();
+            } else {
+                return res.status(403).json({ message: "User not authenticated."});
+            }
+        });
+    } else {
+        return res.status(403).json({ message: "User not logged in." });
+    }
+});        
+
+        //  Verify JWT token
         jwt.verify(token, "access", (err, user) => {
             if (!err) {
                 req.user = user;
@@ -72,6 +88,7 @@ app.post("/login", (req, res) => {
 const PORT =5000;
 
 app.use("/customer", customer_routes);
+app.use("/", customer_routes);
 app.use("/", genl_routes);
 
 app.listen(PORT,()=>console.log("Server is running"));
