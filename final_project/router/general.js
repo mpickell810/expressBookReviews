@@ -65,7 +65,7 @@ public_users.get('/isbn/:isbn', async (req, res) => {
   
   try {
   // Make an axios request (e.g., to an external API)
-  const response = await axios.get(`https://api.example.com/books/${isbn}`);
+  const response = await axios.get(`https://localhost:5000/books/${isbn}`);
   const book = response.data;
   
   if (book) {
@@ -86,7 +86,7 @@ public_users.get('/author/:author', async (req, res) => {
   const author = req.params.author.toLowerCase().trim();
   try {
   // Make an axios request to an external API
-  const response = await axios.get(`https://api.example.com/authors/${author}`);
+  const response = await axios.get(`https://localhost:5000/authors/${author}`);
   const booksByAuthor = response.data;
 
   if (booksByAuthor && booksByAuthor.length > 0) {
@@ -107,7 +107,7 @@ public_users.get('/title/:title', async (req, res) => {
   const title = req.params.title.toLowerCase().trim();
 
   try {
-    const response = await axios.get(`https://api.example.com/books/title/${title}`);
+    const response = await axios.get(`https://localhost:5000/books/title/${title}`);
     const booksByTitle = response.data;
 
   if (booksByTitle && booksByTitle.length > 0) {
