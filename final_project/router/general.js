@@ -122,7 +122,18 @@ public_users.get('/title/:title', async (req, res) => {
   }
 });
 
-//  Get book review
+//  Get book reviews
+public_users.get('/review', function (req, res) {
+    const allReviews = {};
+    Object.keys(books).forEach(key => {
+      if (books[key].reviews && Object.keys(books[key].reviews).length > 0) {
+        allReviews[key] = books[key].reviews;
+      }
+    });
+    return res.status(200).send(JSON.stringify(allReviews, null, 4));
+  });
+
+// Get book reviews by ISBN
 public_users.get('/review/:isbn',function (req, res) {
   //Retrieve the review parameter from the request URL and send the corresponding review details
   const isbn = req.params.isbn;
